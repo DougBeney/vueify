@@ -1,15 +1,22 @@
 var through = require('through')
 var compiler = require('./lib/compiler')
+var debug = true
 
 module.exports = function vueify (file, options) {
   if (!/.vue$/.test(file)) {
     return through()
   }
+  
+  if (options.hasOwnProperty('_flags')) {
+    if (options._flags.hasOwnProperty('debug')) {
+      debug = options._flags.debug
+    }
+  }
 
   compiler.loadConfig()
   compiler.applyConfig(options)
   compiler.applyConfig({
-    sourceMap: options._flags.debug
+    sourceMap: debug
   })
 
   var data = ''
